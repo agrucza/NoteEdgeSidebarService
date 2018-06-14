@@ -1,0 +1,10 @@
+<resources>
+    <string name="appName_en">Note Edge Sidebar</string>
+
+    <string name="titleActivitySettings_en">Note Edge Sidebar Settings</string>
+    <string name="settingsShowContent_en">Show content</string>
+
+    <string name="preferencesFileKey">net.grucza.android.noteedgesidebar</string>
+    <string name="settingsLabelShowApps_en">Apps to Show</string>
+
+</resources>
