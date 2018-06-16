@@ -1,6 +1,8 @@
 # NoteEdgeSidebarService
 This project is about creating a Sidebar for the Samsung Galaxy Note Edge running non Stock Roms (aiming at Android Oreo)
 
+It will work best in combination with my other project https://github.com/agrucza/XposedNoteEdgeResizer which will resize the Android GUI / Android Apps to only take the screenspace without the edge screen.
+
 Current status:
 ---------------
 Whats working:
