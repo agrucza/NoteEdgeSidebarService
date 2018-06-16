@@ -89,7 +89,9 @@ public class Launcher {
 			output += app.getPackageName() + ";";
 		}
 		
-		output = output.substring(0, output.length() - 1);
+		if (output.length() > 0) {
+			output = output.substring(0, output.length() - 1);
+		}
 		return output;
 	}
 	

@@ -93,6 +93,7 @@ public class NoteEdgeSidebarSettings extends Activity implements AdapterView.OnI
 			Log.d(TAG, "Setting launcher app: " + app.getPackageName());
 			config.addLauncherApp(app);
 		} else {
+			Log.d(TAG, "Remove launcher app: " + app.getPackageName());
 			config.removeLauncherApp(app);
 		}
 		
