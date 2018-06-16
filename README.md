@@ -16,12 +16,13 @@ Whats working:
 
 There are some issues:
 1. When the Sidebar is installed and launched it will crash as the Sidebar needs the permission to show over other apps. Go to "settings -> apps -> Node Edge Sidebar -> permissions -> show over other apps" and grant permission. The next time the app is run the sidebar will be shown.
-2. The settings app will list all installed apps, this will need a few seconds to show the list.
-3. When an app should be added to the launcher dont click the switch as this currently does not work. Click on the app item in the list but not the switch. This will add the app to the launcher. Also the switch is not updated to be switched to on right after that the switch will go to on after the list is updated (rotation or settings app started again).
-4. The launcher icons order is ordered like the apps are reported by the system.
-5. If you add more icons than there is space on the sidebar they will not be reachable. (At the moment)
-6. The Android power management tends to kill the Service quite often especially when the device is woken up.
-7. At the moment the Sidebar will not be shown at the Lockscreen.
+2. The Sidebar seems to be partially overlayed by the status bar. This is an issue with OREO which seems to prevent apps to overlay the status bar.
+3. The settings app will list all installed apps, this will need a few seconds to show the list.
+4. When an app should be added to the launcher dont click the switch as this currently does not work. Click on the app item in the list but not the switch. This will add the app to the launcher. Also the switch is not updated to be switched to on right after that the switch will go to on after the list is updated (rotation or settings app started again).
+5. The launcher icons order is ordered like the apps are reported by the system.
+6. If you add more icons than there is space on the sidebar they will not be reachable. (At the moment)
+7. The Android power management tends to kill the Service quite often especially when the device is woken up.
+8. At the moment the Sidebar will not be shown at the Lockscreen.
 
 Comming up next:
 ----------------
