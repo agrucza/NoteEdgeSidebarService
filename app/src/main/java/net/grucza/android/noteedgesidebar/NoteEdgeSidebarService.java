@@ -2,11 +2,13 @@ package net.grucza.android.noteedgesidebar;
 
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,7 +23,7 @@ import java.util.List;
 /**
  * NoteEdgeSidebarService This is the main service providing the sidebar view
  */
-public class NoteEdgeSidebarService extends Service implements ImageView.OnClickListener {
+public class NoteEdgeSidebarService extends Service implements ImageView.OnTouchListener {
 	private static final String TAG = "noteedgesidebarservice";
 	
 	private static final String BCAST_CONFIGCHANGED = "android.intent.action.CONFIGURATION_CHANGED";
@@ -36,6 +38,10 @@ public class NoteEdgeSidebarService extends Service implements ImageView.OnClick
 	private OrientationEventListener orientationEventListener;
 	
 	private int lastrotation = -1;
+	
+	private int _xTouchDelta;
+	private int _yTouchDelta;
+	private int _touchStart;
 	
 	@Override
 	public void onCreate() {
@@ -130,7 +136,7 @@ public class NoteEdgeSidebarService extends Service implements ImageView.OnClick
 		imageView.setLayoutParams(layoutParams);
 		
 		imageView.setTag(0);
-		imageView.setOnClickListener(this);
+		//imageView.setOnClickListener(this);
 		
 		cView.addView(imageView);
 		
@@ -140,17 +146,24 @@ public class NoteEdgeSidebarService extends Service implements ImageView.OnClick
 				imageView.setImageDrawable(apps.get(i).getIcon());
 				imageView.setLayoutParams(layoutParams);
 				
+				if (apps.get(i).getHighlight()) {
+					imageView.setBackgroundColor(Color.GRAY);
+				}
+				
 				imageView.setTag(i + 1);
 				
-				imageView.setOnClickListener(this);
+				//imageView.setOnClickListener(this);
 				
 				cView.addView(imageView);
 			}
 		}
+		
+		cView.setOnTouchListener(this);
 	}
 	
 	/**
-	 * Pretty standard TODO: Probably start service again to keep it running all the time?
+	 * Pretty standard
+	 * TODO: Probably start service again to keep it running all the time?
 	 */
 	@Override
 	public void onDestroy() {
@@ -242,6 +255,7 @@ public class NoteEdgeSidebarService extends Service implements ImageView.OnClick
 		wm.addView(oView, oParams);
 	}
 	
+	/*
 	@Override
 	public void onClick(View v) {
 		// Icons are as following:
@@ -258,5 +272,91 @@ public class NoteEdgeSidebarService extends Service implements ImageView.OnClick
 			position -= 1;
 			config.getLauncher().startApp(position);
 		}
+	}
+	*/
+	
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		final int size = config.getLauncher().getLauncherApps().size();
+		final int x = (int) event.getRawX();
+		final int y = (int) event.getRawY();
+		
+		final int swipedetect = 50;
+		boolean swipe = false;
+		boolean swipenext = true;
+		
+		boolean returnval = true;
+		
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+			case MotionEvent.ACTION_DOWN:
+				_xTouchDelta = x;
+				_yTouchDelta = y;
+				_touchStart = (int) Math.ceil((lastrotation == 0 ? _yTouchDelta : _xTouchDelta) / 160) - 1;
+				if (_touchStart < size) {
+					if (_touchStart >= 0) {
+						config.getLauncher().getLauncherApp(_touchStart).setHightlight(true);
+					} else {
+						// visibility icon is clicked
+						config.setContentVisibility(!config.getContentVisibility());
+						returnval = false;
+					}
+					updateSidebarContent();
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				int after = ((int) Math.ceil((lastrotation == 0 ? y : x) / 160) - 1);
+				
+				if (after > size) {
+					after = size - 1;
+				}
+				
+				if (_touchStart >= 0 && _touchStart < size) {
+					config.getLauncher().getLauncherApp(_touchStart).setHightlight(false);
+					
+					if (_touchStart == after) {
+						config.getLauncher().startApp(_touchStart);
+					} else {
+						config.moveLauncherApp(_touchStart, after);
+					}
+				}
+				
+				updateSidebarContent();
+				break;
+			case MotionEvent.ACTION_POINTER_DOWN:
+				break;
+			case MotionEvent.ACTION_POINTER_UP:
+				break;
+			case MotionEvent.ACTION_MOVE:
+				if (lastrotation == 0) {
+					// try to detect left and right swiping
+					if ((_xTouchDelta - swipedetect) > x) {
+						// left swipe
+						swipe = true;
+						swipenext = true;
+					} else if ((_xTouchDelta + swipedetect) < x) {
+						// right swipe
+						swipe = true;
+					}
+				} else {
+					// try to detect up and down swiping
+					if ((_yTouchDelta - swipedetect) > y) {
+						// up swipe
+						swipe = true;
+					} else if ((_xTouchDelta + swipedetect) < x) {
+						// down swipe
+						swipe = true;
+						swipenext = true;
+					}
+				}
+				
+				if (swipe) {
+					Log.d(TAG, "swipe direction: " + (swipenext ? "next" : "last"));
+					returnval = true;
+				}
+				break;
+		}
+		//rootLayout.invalidate();
+		
+		return returnval;
 	}
 }

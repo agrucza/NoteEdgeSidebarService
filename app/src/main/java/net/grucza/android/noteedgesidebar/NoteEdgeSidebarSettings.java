@@ -46,9 +46,6 @@ public class NoteEdgeSidebarSettings extends Activity implements AdapterView.OnI
 		
 		toggleService();
 		
-		// SET VIEW WHEN STARTED BY LAUNCHER
-		//setContentView(R.layout.activity_settings);
-		
 		// FINISH IF STARTED OTHERWISE
 		//finish();
 		

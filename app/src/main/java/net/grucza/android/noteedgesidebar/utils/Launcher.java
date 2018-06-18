@@ -17,7 +17,7 @@ public class Launcher {
 	Context context;
 	List<App> installed_apps;
 	List<App> launcher_apps;
-	
+
 	/**
 	 * Main class of the launcher
 	 *
@@ -59,6 +59,26 @@ public class Launcher {
 				}
 			}
 		}
+		
+		for (int i = 0; i < launcher_apps.size(); i++) {
+			int index = launchable_apps.indexOf(launcher_apps.get(i).packageName);
+			launcher_apps.add(index, launcher_apps.remove(i));
+		}
+	}
+	
+	public String getLauncherAppsPackages() {
+		String output = "";
+		
+		for (int i = 0; i < this.launcher_apps.size(); i++) {
+			App app = this.launcher_apps.get(i);
+			output += app.getPackageName() + ";";
+		}
+		
+		if (output.length() > 0) {
+			output = output.substring(0, output.length() - 1);
+		}
+		
+		return output;
 	}
 	
 	public List<App> getInstalledApps() {
@@ -81,18 +101,8 @@ public class Launcher {
 		}
 	}
 	
-	public String getLauncherAppsPackages() {
-		String output = "";
-		
-		for (int i = 0; i < this.launcher_apps.size(); i++) {
-			App app = this.launcher_apps.get(i);
-			output += app.getPackageName() + ";";
-		}
-		
-		if (output.length() > 0) {
-			output = output.substring(0, output.length() - 1);
-		}
-		return output;
+	public App getLauncherApp(int position) {
+		return this.launcher_apps.get(position);
 	}
 	
 	public void startApp(int position) {
@@ -101,6 +111,11 @@ public class Launcher {
 		
 		i.addCategory(Intent.CATEGORY_LAUNCHER);
 		this.context.startActivity(i);
+	}
+	
+	public void moveLauncherApp(int before, int after) {
+		App app = this.launcher_apps.remove(before);
+		this.launcher_apps.add(after, app);
 	}
 	
 	/**
@@ -112,6 +127,7 @@ public class Launcher {
 		private String packageName;
 		private Intent intent;
 		private boolean launchable;
+		private boolean highlight = false;
 		
 		/**
 		 * Constructor for Launcher Apps
@@ -179,6 +195,14 @@ public class Launcher {
 		 */
 		public void setLaunchable(boolean launchable) {
 			this.launchable = launchable;
+		}
+		
+		public boolean getHighlight() {
+			return this.highlight;
+		}
+		
+		public void setHightlight(boolean highlight) {
+			this.highlight = highlight;
 		}
 	}
 }

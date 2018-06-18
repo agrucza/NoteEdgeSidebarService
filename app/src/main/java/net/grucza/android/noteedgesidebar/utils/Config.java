@@ -2,7 +2,6 @@ package net.grucza.android.noteedgesidebar.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import net.grucza.android.noteedgesidebar.R;
 
@@ -47,7 +46,7 @@ public class Config {
 		this.showContent = preferences.getBoolean("showContent", false);
 		this.contentVisibility = preferences.getBoolean("contentVisibility", true);
 		this.activeSidebarView = preferences.getString("activeSidebarView", "LAUNCHER");
-		Log.d(TAG, "showContent: " + this.showContent);
+		
 		// LOAD LAUNCHER APPS AND INSTANCIATE LAUNCHER
 		this.launcher.Launcher(this.context, preferences.getString("launcherApps", ""));
 	}
@@ -124,24 +123,42 @@ public class Config {
 	 * Setter for contentVisibility This method sets the visibility of the sidebar content of set
 	 * off the switch icon (visibility) is still shown
 	 *
-	 * @param contentVisibility Boolean True is the content of the sidebar should be shown
+	 * @param contentVisibility Boolean True if the content of the sidebar should be shown
 	 */
 	public void setContentVisibility(boolean contentVisibility) {
 		this.contentVisibility = contentVisibility;
 		this.storeConfig();
 	}
 	
+	/**
+	 * This method launches an app with an intent
+	 *
+	 * @param app App The app to launch
+	 */
 	public void addLauncherApp(Launcher.App app) {
 		this.launcher.addLauncherApp(app);
 		this.storeConfig();
 	}
 	
+	/**
+	 * Removes an app from the Launcher
+	 * @param app App the app to remove
+	 */
 	public void removeLauncherApp(Launcher.App app) {
 		this.launcher.removeLauncherApp(app);
 		this.storeConfig();
 	}
 	
+	/**
+	 * returns the launcher object
+	 * @return launcher Launcher the launcher object
+	 */
 	public Launcher getLauncher() {
 		return this.launcher;
+	}
+	
+	public void moveLauncherApp(int before, int after) {
+		this.launcher.moveLauncherApp(before, after);
+		this.storeConfig();
 	}
 }
